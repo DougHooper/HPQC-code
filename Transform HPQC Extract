@@ -1,0 +1,29 @@
+import pandas as pd
+import os
+
+# Define the file path
+file_path = r'C:\Users\269661\OneDrive - Spectrum Brands, Inc\Desktop\HPQC Export'
+
+# Check if file exists
+if not os.path.exists(file_path):
+    print("File not found!")
+    exit()
+
+# Load the 'No Run Scripts' sheet
+no_run_scripts_df = pd.read_excel(file_path, sheet_name='No Run Scripts')
+
+# Load the 'In Flight Scripts' sheet
+in_flight_scripts_df = pd.read_excel(file_path, sheet_name='In Flight Scripts')
+
+# Concatenate the two dataframes vertically, ignoring blank rows
+appended_df = pd.concat([in_flight_scripts_df, no_run_scripts_df], ignore_index=True).dropna(how='all')
+
+# Create a new sheet in the same workbook with the appended data
+with pd.ExcelWriter(file_path, engine='openpyxl', mode='a') as writer:
+    appended_df.to_excel(writer, sheet_name='Scripts Appended', index=False)
+
+# Save the edited Excel file to the new file path
+new_file_path = r'C:\Users\269661\OneDrive - Spectrum Brands, Inc\Desktop\HPQC Exercise\Scripts Appended.xlsx'
+appended_df.to_excel(new_file_path, index=False)
+
+print("Task complete!")
